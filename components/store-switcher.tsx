@@ -48,7 +48,9 @@ const StoreSwitcher = ({ className, items = []}: SwitcherProps) => {
 					aria-label="Select a store"
 				>
 					<StoreIcon className="mr-2 h-4 w-4 text-yellow-400"/>
+
 					{currentStore?.label}
+
 					<ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
@@ -92,6 +94,7 @@ const StoreSwitcher = ({ className, items = []}: SwitcherProps) => {
 								}}
 							>
 								<PlusCircle className="mr-2 h-4 w-4" />
+								
 								Create Store
 							</CommandItem>
 						</CommandGroup>

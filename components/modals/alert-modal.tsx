@@ -32,7 +32,7 @@ export const AlertModal: FC<Props> = ({
 			isOpen={isOpen}
 			onClose={onClose}
 		>
-			<div>
+			<div className="pt-6 space-x-2 flex items-center justify-end w-full">
 				<Button
 					disabled={loading}
 					variant={"outline"}

@@ -68,8 +68,7 @@ export const BillboardForm: FC<Props> = ({ initialData }) => {
 						imageUrl: data.imageUrl
 					})
 				})
-			} else 
-			{
+			} else {
 				response = await fetch(`/api/${params.storeId}/billboards`, {
 					method: "POST",
 					headers: {
@@ -86,6 +85,7 @@ export const BillboardForm: FC<Props> = ({ initialData }) => {
 			console.log('/components/modals/store-modal.tsx respToJson: ', respToJson)
 			
 			router.refresh()
+			router.push(`/${params.storeId}/billboards`)
 			toast.success(toastMessage)
 			
 			// await axios.patch (`/api/stores/${params.storeId}`, data)
@@ -108,7 +108,7 @@ export const BillboardForm: FC<Props> = ({ initialData }) => {
 			})
 
 			router.refresh()
-			router.push('/')
+			router.push(`/${params.storeId}/billboards`)
 			toast.success("Billboard deleted successfully")
 
 		} catch (error) {
@@ -203,8 +203,6 @@ export const BillboardForm: FC<Props> = ({ initialData }) => {
 					</Button>
 				</form>
 			</Form>
-
-			<Separator />
 		</>
 	)
 }
