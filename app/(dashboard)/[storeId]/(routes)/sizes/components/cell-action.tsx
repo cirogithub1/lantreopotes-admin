@@ -5,13 +5,13 @@ import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react"
 import { toast } from "react-hot-toast"
 import { useParams, useRouter } from "next/navigation"
 
-import { CategoryColumn } from "./columns"
+import { SizeColumn } from "./columns"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { AlertModal } from "@/components/modals/alert-modal"
 
 interface Props {
-	data: CategoryColumn
+	data: SizeColumn
 }
 
 export const CellAction: FC<Props> = ({ data }) => {
@@ -29,7 +29,7 @@ export const CellAction: FC<Props> = ({ data }) => {
 	const onDelete = async () => {
 		try {
 			setLoading(true)
-			const resp = await fetch(`/api/${params.storeId}/categories/${data.id}`, {
+			const resp = await fetch(`/api/${params.storeId}/sizes/${data.id}`, {
 				method: "DELETE",
 				headers: {
 					'Content-Type': 'application/json',
@@ -37,10 +37,10 @@ export const CellAction: FC<Props> = ({ data }) => {
 			})
 
 			router.refresh()
-			toast.success("Category deleted successfully")
+			toast.success("Size deleted successfully")
 
 		} catch (error) {
-			toast.error("Remember to remove products from this category first")
+			toast.error("Remember to remove products from this size first")
 		} finally {
 			setLoading(false)
 			setOpen(false)
@@ -66,7 +66,9 @@ export const CellAction: FC<Props> = ({ data }) => {
 				</DropdownMenuTrigger>
 
 				<DropdownMenuContent align="end">
-					<DropdownMenuLabel>Actions</DropdownMenuLabel>
+					<DropdownMenuLabel>
+						Actions
+					</DropdownMenuLabel>
 
 					<DropdownMenuItem onClick={() => onCopy(data.id)}>
 						<Copy className="mr-2 h-4 w-4" />
@@ -75,7 +77,7 @@ export const CellAction: FC<Props> = ({ data }) => {
 					</DropdownMenuItem>
 					
 					<DropdownMenuItem 
-						onClick={() => router.push(`/${params.storeId}/categories/${data.id}`)}
+						onClick={() => router.push(`/${params.storeId}/sizes/${data.id}`)}
 					>
 						<Edit className="mr-2 h-4 w-4" />
 

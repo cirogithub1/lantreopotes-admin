@@ -1,7 +1,7 @@
 "use client"
 
 import { FC, useState } from "react"
-import { Category } from "@prisma/client"
+import { Billboard, Category } from "@prisma/client"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { AlertModal } from "@/components/modals/alert-modal"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const formSchema = z.object({
 	name: z.string().min(1),
@@ -24,10 +25,11 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 interface Props {
+	billboards: Billboard[] | null
 	initialData: Category | null
 }
 
-export const CategoryForm: FC<Props> = ({ initialData }) => {
+export const CategoryForm: FC<Props> = ({ initialData, billboards }) => {
 	const params = useParams()
 	const router = useRouter()
 
@@ -49,7 +51,7 @@ export const CategoryForm: FC<Props> = ({ initialData }) => {
 
 	const onSubmit = async (data: FormValues) => {
 		try {
-			// console.log('/dashboard/componenets/settings-form.tsx: onSubmit()', data)	
+			// console.log('/[categoryId]/componenets/category-form.tsx: onSubmit()', data)	
 			setLoading(true)		
 
 			let response
@@ -83,7 +85,7 @@ export const CategoryForm: FC<Props> = ({ initialData }) => {
 			console.log('/components/modals/store-modal.tsx respToJson: ', respToJson)
 			
 			router.refresh()
-			router.push(`/${params.storeId}/billboards`)
+			router.push(`/${params.storeId}/categories`)
 			toast.success(toastMessage)
 			
 		} catch (error) {
@@ -108,7 +110,7 @@ export const CategoryForm: FC<Props> = ({ initialData }) => {
 			toast.success("Category deleted successfully")
 
 		} catch (error) {
-			toast.error("Remember to remove categories from this category first")
+			toast.error("Remember to remove products from this category first")
 		} finally {
 			setLoading(false)
 			setOpen(false)
@@ -152,7 +154,7 @@ export const CategoryForm: FC<Props> = ({ initialData }) => {
 						<FormField 
 							control={form.control}
 							name="name"
-							render={({ field}) =>(
+							render={({ field }) =>(
 								<FormItem>
 									<FormLabel>Name</FormLabel>
 
@@ -162,6 +164,45 @@ export const CategoryForm: FC<Props> = ({ initialData }) => {
 											placeholder="Category name" 
 											{...field} />
 									</FormControl>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<FormField 
+							control={form.control}
+							name="billboardId"
+							render={({ field}) =>(
+								<FormItem>
+									<FormLabel>Billboard</FormLabel>
+
+									<Select
+										disabled={loading}
+										onValueChange={field.onChange}
+										value={field.value}
+										defaultValue={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue 
+													defaultValue={field.value} 
+													placeholder="Select a billboard" />
+											</SelectTrigger>
+										</FormControl>
+
+										<SelectContent>
+											{billboards?.map((billboard) => (
+												<SelectItem
+													key={billboard.id}
+													value={billboard.id}
+												>
+													{billboard.label}
+												</SelectItem>
+											))}
+
+										</SelectContent>
+									</Select>
 
 									<FormMessage />
 								</FormItem>

@@ -27,8 +27,8 @@ export const AlertModal: FC<Props> = ({
 
 	return (
 		<Modal
-			title="Delete Store"
-			description="Are you sure you want to delete this store?"
+			title="Delete action requested"
+			description="Are you sure to delete this item ?"
 			isOpen={isOpen}
 			onClose={onClose}
 		>

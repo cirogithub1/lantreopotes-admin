@@ -33,11 +33,9 @@ export const ApiAlert: FC<Props> = ({ title, description, variant }) => {
 	return (
 		<Alert className="">
 
-			<AlertTitle
-				className="flex items-center gap-x-2"
-			>
+			<AlertTitle className="flex items-center gap-x-2">
 				<Server className="h-4 w-4" />
-				
+
 				{title}
 
 				<Badge variant={variantMap[variant]}>
@@ -45,10 +43,10 @@ export const ApiAlert: FC<Props> = ({ title, description, variant }) => {
 				</Badge>
 			</AlertTitle>
 
-			<AlertDescription className="flex items-center justify-between mt-2">
+			<AlertDescription className="flex items-center justify-between mt-1">
 				<code 
-					className="relative rounded bg-muted px-1 py-1 font-mono text-sm font-semibold">
-					{description}
+					className="relative rounded bg-muted px-2 py-1 font-mono text-sm font-semibold">
+						{description}
 				</code>
 
 				<Button variant={"outline"} size={"icon"} onClick={onCopy}>

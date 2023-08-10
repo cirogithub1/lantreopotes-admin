@@ -21,7 +21,7 @@ const Navbar = async () => {
 	return (
 		<div className="border-b">
 			<div className="flex items-center h-16 px-4">
-				<StoreSwitcher items={stores}/>
+				<StoreSwitcher items={stores}/> {/* the hydration problems comes from here */}
 
 				<MainNav className="mx-6"/>
 

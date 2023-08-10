@@ -31,7 +31,7 @@ export const Modal: FC<ModalProps> = ({
 		>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>{title}</DialogTitle>
+					<DialogTitle className="text-xl font-extrabold">{title}</DialogTitle>
 					<DialogDescription>{description}</DialogDescription>
 				</DialogHeader>
 

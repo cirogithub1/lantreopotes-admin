@@ -1,13 +1,13 @@
 "use client"
 
 import { FC, useState } from "react"
-import { Billboard } from "@prisma/client"
-import * as z from "zod"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { useParams, useRouter } from "next/navigation"
+import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
+import { Size } from "@prisma/client"
 
 import { Heading } from "@/components/ui/heading"
 import { Button } from "@/components/ui/button"
@@ -15,80 +15,83 @@ import { Separator } from "@/components/ui/separator"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { AlertModal } from "@/components/modals/alert-modal"
-import ImageUpload from "@/components/ui/image-upload"
-// import axios from "axios"
 
 const formSchema = z.object({
-	label: z.string().min(1),
-	imageUrl: z.string().min(1)
+	name: z.string().min(1),
+	value: z.string().min(1)
 })
 
 type FormValues = z.infer<typeof formSchema>
 
 interface Props {
-	initialData: Billboard | null
+	initialData: Size | null
 }
 
-export const BillboardForm: FC<Props> = ({ initialData }) => {
+export const SizeForm: FC<Props> = ({ initialData }) => {
 	const params = useParams()
 	const router = useRouter()
 
 	const [open, setOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 
-	const title = initialData ? "Edit billboard" : "Create billboard"
-	const description = initialData ? "Edit billboard" : "Add a new billboard"
-	const toastMessage = initialData ? "Billboard updated." : "Billboard created."
+	const title = initialData ? "Edit size" : "Create size"
+	const description = initialData ? "Edit size" : "Add a new size"
+	const toastMessage = initialData ? "Size updated." : "Size created."
 	const action = initialData ? "Save changes" : "Create"
 
 	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData || {
-			label: "",
-			imageUrl: ""
+			name: "",
+			value: ""
 		}
 	})
 
 	const onSubmit = async (data: FormValues) => {
 		try {
-			// console.log('/dashboard/componenets/settings-form.tsx: onSubmit()', data)	
+			// console.log('/dashboard/componenets/size-form.tsx: onSubmit()', data)	
 			setLoading(true)		
 
 			let response
 			if (initialData) 
 			{
-				response = await fetch(`/api/${params.storeId}/billboards/${params.billboardId}`, 
+				response = await fetch(`/api/${params.storeId}/sizes/${params.sizeId}`, 
 				{
 					method: "PATCH",
 					headers: {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
-						label: data.label,
-						imageUrl: data.imageUrl
+						// name: data.name,
+						// value: data.value
+						data: data
 					})
 				})
 			} else {
-				response = await fetch(`/api/${params.storeId}/billboards`, {
+				response = await fetch(`/api/${params.storeId}/sizes`, {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
-						label: data.label,
-						imageUrl: data.imageUrl
+						// name: data.name,
+						// value: data.value
+						data: data
 					})
 				})
 			}
 			
 			const respToJson = await response?.json()
-			console.log('/components/modals/store-modal.tsx respToJson: ', respToJson)
+			console.log('/sizeId/components/size-form respToJson: ', respToJson)
 			
 			router.refresh()
-			router.push(`/${params.storeId}/billboards`)
+			router.push(`/${params.storeId}/sizes`)
 			toast.success(toastMessage)
 
 		} catch (error) {
+			console.log('/size-form/onSubmit error: ', error)
+			toast.error('Something went wrong.')
+
 			setLoading(false)
 		} finally {
 			setLoading(false)
@@ -98,7 +101,7 @@ export const BillboardForm: FC<Props> = ({ initialData }) => {
 	const onDelete = async () => {
 		try {
 			setLoading(true)
-			const resp = await fetch(`/api/${params.storeId}/billboards/${params.billboardId}`, {
+			const resp = await fetch(`/api/${params.storeId}/sizes/${params.sizeId}`, {
 				method: "DELETE",
 				headers: {
 					'Content-Type': 'application/json',
@@ -106,11 +109,11 @@ export const BillboardForm: FC<Props> = ({ initialData }) => {
 			})
 
 			router.refresh()
-			router.push(`/${params.storeId}/billboards`)
-			toast.success("Billboard deleted successfully")
+			router.push(`/${params.storeId}/sizes`)
+			toast.success("Size deleted successfully")
 
 		} catch (error) {
-			toast.error("Remember to remove categories from this billboard first")
+			toast.error("Remember to remove products from this size first")
 		} finally {
 			setLoading(false)
 			setOpen(false)
@@ -150,39 +153,41 @@ export const BillboardForm: FC<Props> = ({ initialData }) => {
 					className="space-y-6 w-full" 
 					onSubmit={form.handleSubmit(onSubmit)}
 				>
-					<FormField 
-						control={form.control}
-						name="imageUrl"
-						render={({ field }) =>(
-							<FormItem>
-								<FormLabel>Background image</FormLabel>
-
-								<FormControl>
-									<ImageUpload 
-										value={field.value ? [field.value] : []}
-										disabled={loading}
-										onChange={(url) => field.onChange(url)} 
-										onRemove={() => field.onChange("")}
-									/>
-								</FormControl>
-
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					
 					<div className="grid grid-cols-3 gap-8">
 						<FormField 
 							control={form.control}
-							name="label"
+							name="name"
 							render={({ field }) =>(
 								<FormItem>
-									<FormLabel>Label</FormLabel>
+									<FormLabel>
+										Name
+									</FormLabel>
 
 									<FormControl>
 										<Input 
 											disabled={loading}
-											placeholder="Billboard label" 
+											placeholder="Size name" 
+											{...field} />
+									</FormControl>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						
+						<FormField 
+							control={form.control}
+							name="value"
+							render={({ field }) =>(
+								<FormItem>
+									<FormLabel>
+										Value
+									</FormLabel>
+
+									<FormControl>
+										<Input 
+											disabled={loading}
+											placeholder="Size value" 
 											{...field} />
 									</FormControl>
 

@@ -1,13 +1,13 @@
 "use client"
 
 import { FC, useState } from "react"
-import { Billboard } from "@prisma/client"
-import * as z from "zod"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { useParams, useRouter } from "next/navigation"
+import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
+import { Color } from "@prisma/client"
 
 import { Heading } from "@/components/ui/heading"
 import { Button } from "@/components/ui/button"
@@ -15,80 +15,83 @@ import { Separator } from "@/components/ui/separator"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { AlertModal } from "@/components/modals/alert-modal"
-import ImageUpload from "@/components/ui/image-upload"
-// import axios from "axios"
 
 const formSchema = z.object({
-	label: z.string().min(1),
-	imageUrl: z.string().min(1)
+	name: z.string().min(1),
+	value: z.string().min(4).regex(/^#/, {
+		message: 'String must be a valid hex color code'
+	})
 })
 
 type FormValues = z.infer<typeof formSchema>
 
 interface Props {
-	initialData: Billboard | null
+	initialData: Color | null
 }
 
-export const BillboardForm: FC<Props> = ({ initialData }) => {
+export const ColorForm: FC<Props> = ({ initialData }) => {
 	const params = useParams()
 	const router = useRouter()
 
 	const [open, setOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 
-	const title = initialData ? "Edit billboard" : "Create billboard"
-	const description = initialData ? "Edit billboard" : "Add a new billboard"
-	const toastMessage = initialData ? "Billboard updated." : "Billboard created."
+	const title = initialData ? "Edit color" : "Create color"
+	const description = initialData ? "Edit color" : "Add a new color"
+	const toastMessage = initialData ? "Color updated." : "Color created."
 	const action = initialData ? "Save changes" : "Create"
 
 	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData || {
-			label: "",
-			imageUrl: ""
+			name: "",
+			value: ""
 		}
 	})
 
 	const onSubmit = async (data: FormValues) => {
 		try {
-			// console.log('/dashboard/componenets/settings-form.tsx: onSubmit()', data)	
+			// console.log('/dashboard/componenets/color-form.tsx: onSubmit()', data)	
 			setLoading(true)		
 
 			let response
 			if (initialData) 
 			{
-				response = await fetch(`/api/${params.storeId}/billboards/${params.billboardId}`, 
+				response = await fetch(`/api/${params.storeId}/colors/${params.colorId}`, 
 				{
 					method: "PATCH",
 					headers: {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
-						label: data.label,
-						imageUrl: data.imageUrl
+						name: data.name,
+						value: data.value
 					})
 				})
 			} else {
-				response = await fetch(`/api/${params.storeId}/billboards`, {
+				response = await fetch(`/api/${params.storeId}/colors`, {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
-						label: data.label,
-						imageUrl: data.imageUrl
+						name: data.name,
+						value: data.value
 					})
 				})
 			}
 			
 			const respToJson = await response?.json()
-			console.log('/components/modals/store-modal.tsx respToJson: ', respToJson)
+			console.log('/colorId/components/color-form/onSubmit respToJson: ', respToJson)
 			
 			router.refresh()
-			router.push(`/${params.storeId}/billboards`)
+			router.push(`/${params.storeId}/colors`)
 			toast.success(toastMessage)
 
 		} catch (error) {
+			console.log('/color-form/onSubmit error: ', error)
+			toast.error('Something went wrong.')
+
 			setLoading(false)
 		} finally {
 			setLoading(false)
@@ -98,19 +101,22 @@ export const BillboardForm: FC<Props> = ({ initialData }) => {
 	const onDelete = async () => {
 		try {
 			setLoading(true)
-			const resp = await fetch(`/api/${params.storeId}/billboards/${params.billboardId}`, {
+			const resp = await fetch(`/api/${params.storeId}/colors/${params.colorId}`, {
 				method: "DELETE",
 				headers: {
 					'Content-Type': 'application/json',
 				}
 			})
 
+			const respToJson = await resp?.json()
+			console.log('/colorId/components/color-form/onDelete respToJson: ', respToJson)
+
 			router.refresh()
-			router.push(`/${params.storeId}/billboards`)
-			toast.success("Billboard deleted successfully")
+			router.push(`/${params.storeId}/colors`)
+			toast.success("Color deleted successfully")
 
 		} catch (error) {
-			toast.error("Remember to remove categories from this billboard first")
+			toast.error("Remember to remove products from this color first")
 		} finally {
 			setLoading(false)
 			setOpen(false)
@@ -150,40 +156,52 @@ export const BillboardForm: FC<Props> = ({ initialData }) => {
 					className="space-y-6 w-full" 
 					onSubmit={form.handleSubmit(onSubmit)}
 				>
-					<FormField 
-						control={form.control}
-						name="imageUrl"
-						render={({ field }) =>(
-							<FormItem>
-								<FormLabel>Background image</FormLabel>
-
-								<FormControl>
-									<ImageUpload 
-										value={field.value ? [field.value] : []}
-										disabled={loading}
-										onChange={(url) => field.onChange(url)} 
-										onRemove={() => field.onChange("")}
-									/>
-								</FormControl>
-
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					
 					<div className="grid grid-cols-3 gap-8">
 						<FormField 
 							control={form.control}
-							name="label"
+							name="name"
 							render={({ field }) =>(
 								<FormItem>
-									<FormLabel>Label</FormLabel>
+									<FormLabel>
+										Name
+									</FormLabel>
 
 									<FormControl>
 										<Input 
 											disabled={loading}
-											placeholder="Billboard label" 
+											placeholder="Color name" 
 											{...field} />
+									</FormControl>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						
+						<FormField 
+							control={form.control}
+							name="value"
+							render={({ field }) =>(
+								<FormItem>
+									<FormLabel>
+										Value
+									</FormLabel>
+
+									<FormControl>
+										<div className="flex items-center gap-x-4">
+											<Input 
+												disabled={loading}
+												placeholder="Color value" 
+												{...field} />
+											
+											<div 
+												// tailwindcss doesn't work with this state:
+												// className={`border p-4 rounded-full bg-[${field.value}]`}
+												// or:
+												className="border p-4 rounded-full"
+												style={{ backgroundColor: field.value }}
+											/>
+										</div>
 									</FormControl>
 
 									<FormMessage />

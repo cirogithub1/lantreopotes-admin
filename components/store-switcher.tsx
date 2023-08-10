@@ -1,6 +1,6 @@
 "use client"
 
-import { ComponentPropsWithoutRef, useState } from "react"
+import { ComponentPropsWithoutRef, useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Check, ChevronsUpDown, PlusCircle, Store as StoreIcon } from "lucide-react"
 
@@ -23,6 +23,14 @@ const StoreSwitcher = ({ className, items = []}: SwitcherProps) => {
 	const router = useRouter()
 
 	const [open, setOpen] = useState(false)
+
+	// Start Block for preventing rerendering on mount (hydration)
+	const [isMounted, setIsMounted] = useState(false)
+	useEffect(() => {
+		setIsMounted(true)
+	}, [])
+	if (!isMounted) return null
+	// End Block for preventing rerendering on mount (hydration)
 
 	const formattedItems = items.map((item) => ({
 		label: item.name,
