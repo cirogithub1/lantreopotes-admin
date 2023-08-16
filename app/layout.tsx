@@ -5,9 +5,10 @@ import './globals.css'
 
 import { ModalProvider } from '@/providers/modal-provider'
 import { ToasterProvider } from '@/providers/toast-provider'
+import { ThemeProvider } from '@/providers/theme-provider'
 
 const inter = Inter({ subsets: ['latin'] })
-const clerk_pub_key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+const clerk_pub_key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
@@ -19,12 +20,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClerkProvider publishableKey={clerk_pub_key}>
       <html>
-        <body className={inter.className}>  
+        <body className={inter.className}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <ToasterProvider />
 
             <ModalProvider />
             
             {children}
+          </ThemeProvider>
         </body> 
       </html>
     </ClerkProvider>

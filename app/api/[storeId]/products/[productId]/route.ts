@@ -7,7 +7,7 @@ export async function GET(
 	_req: Request, { params }: { params: { productId: string }}) 
 {
 	if (!params.productId) {
-		return new NextResponse("Product id is required", { status: 401})
+		return new NextResponse("Product id is required", { status: 401 })
 	}
 
 	try {

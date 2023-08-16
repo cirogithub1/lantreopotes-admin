@@ -16,6 +16,9 @@ export async function GET(
 		const category = await prismadb.category.findUnique({
 			where: {
 				id: params.categoryId,
+			},
+			include: {
+				billboard: true
 			}
 		})
 
@@ -48,7 +51,7 @@ export async function PATCH (
 		return new NextResponse("Billboard ID is required in patch", { status: 401})
 	}
 
-	if (!params.categoryId) {
+	if (!params?.categoryId) {
 		return new NextResponse("Category ID is required in patch", { status: 401})
 	}
 
