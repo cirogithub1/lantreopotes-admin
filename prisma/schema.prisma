@@ -86,6 +86,7 @@ model Product {
   categoryId  String
   category    Category  @relation("CategoryToProduct", fields: [categoryId], references: [id])
   orderItems  OrderItem[]
+  orderId     String
   name        String
   price       Decimal
   isFeatured  Boolean   @default(false)
@@ -116,15 +117,15 @@ model Image {
 }
 
 model Order {
-  id          String   @id @default(uuid())
-  storeId    String
-  store       Store    @relation("StoreToOrder", fields: [storeId], references: [id])
+  id          String        @id @default(uuid())
+  storeId     String
+  store       Store         @relation("StoreToOrder", fields: [storeId], references: [id])
   orderItems  OrderItem[]
-  isPaid      Boolean   @default(false)
-  phone       String    @default("")
-  address     String    @default("")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  isPaid      Boolean       @default(false)
+  phone       String        @default("")
+  address     String        @default("")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   @@index([storeId])
 }
