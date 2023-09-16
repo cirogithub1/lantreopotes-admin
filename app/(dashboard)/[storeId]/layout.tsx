@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs"
 import { redirect } from "next/navigation"
 
 export default async function DashboardLayout({
-	children,	params }: {	children: React.ReactNode,	params: { stroreId: string }
+	children,	params }: {	children: React.ReactNode,	params: { storeId: string }
 }) {
 	const { userId } = auth()
 
@@ -14,7 +14,7 @@ export default async function DashboardLayout({
 
 	const store = await prismadb.store.findFirst({
 		where: {
-			id: params.stroreId,
+			id: params.storeId,
 			userId: userId
 		}
 	})

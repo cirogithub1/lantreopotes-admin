@@ -40,7 +40,7 @@ export async function PATCH (
 		return NextResponse.json(store)
 		
 	} catch (error) {
-		console.log('[STORES_PATCH]: ', error)
+		console.log('[STORE_PATCH]: ', error)
 		return new NextResponse("Internal POST error", { status: 500})				
 	}
 }
@@ -73,7 +73,7 @@ export async function DELETE (
 		return NextResponse.json(store)
 		
 	} catch (error) {
-		console.log('[STORES_DELETE]: ', error)
+		console.log('[STORE_DELETE]: ', error)
 		return new NextResponse("Internal DELETE error", { status: 500})				
 	}
 }

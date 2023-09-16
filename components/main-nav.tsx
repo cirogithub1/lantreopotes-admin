@@ -1,8 +1,8 @@
 "use client"
 
-import Link from "next/link"
-import { useParams, usePathname } from "next/navigation"
 import { HTMLAttributes } from "react"
+import { useParams, usePathname } from "next/navigation"
+import Link from "next/link"
 
 import { cn } from "@/lib/utils"
 

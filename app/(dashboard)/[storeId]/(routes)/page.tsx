@@ -1,8 +1,10 @@
 import { FC } from "react"
+
+import { CreditCard, Euro, Package } from "lucide-react"
+
 import { Heading } from "@/components/ui/heading"
 import { Separator } from "@/components/ui/separator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { CreditCard, Euro, Package } from "lucide-react"
 import { formatter } from "@/lib/utils"
 import { getTotalRevenue } from "@/actions/get-total-revenue"
 import { getSalesCount } from "@/actions/get-sales-count"
@@ -28,6 +30,14 @@ const DashboardPage: FC<Props> = async ({ params }) => {
 				<Separator />
 
 				<div className="grid gap-4 grid-cols-3">
+
+					<h1>
+						This is the Overview of the Restaurant: 
+
+						{params.storeId &&
+							<p>{params.storeId}</p>
+						}
+					</h1> 
 					<Card>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb=2">
 							<CardTitle className="text-sm font-medium">

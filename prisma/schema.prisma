@@ -86,7 +86,6 @@ model Product {
   categoryId  String
   category    Category  @relation("CategoryToProduct", fields: [categoryId], references: [id])
   orderItems  OrderItem[]
-  orderId     String
   name        String
   price       Decimal
   isFeatured  Boolean   @default(false)
